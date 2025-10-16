@@ -1,3 +1,4 @@
+/* eslint-env node */
 import userService from "../services/user.service.js";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -6,7 +7,7 @@ import protobuf from "protobufjs";
 export const createUser = async (req, res, next) => {
   try {
     const user = await userService.createUser(req.body);
-    const { password, ...userData } = user.toJSON();
+    const { password: _password, ...userData } = user.toJSON();
     res.status(201).json(userData);
   } catch (err) {
     next(err);
@@ -34,7 +35,7 @@ export const getUser = async (req, res, next) => {
 export const updateUser = async (req, res, next) => {
   try {
     const user = await userService.updateUser(req.params.id, req.body);
-    const { password, ...userData } = user.toJSON();
+    const { password: _password, ...userData } = user.toJSON();
     res.json(userData);
   } catch (err) {
     next(err);

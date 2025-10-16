@@ -1,5 +1,6 @@
 import User from "../models/userModel.js";
 import { hashPassword } from "../utils/hash.js";
+import { hashEmail, signDigest } from "../utils/crypto.js";
 
 class UserService {
   async createUser(data) {
@@ -7,7 +8,16 @@ class UserService {
     if (existingUser) throw new Error("Email already exists");
 
     const hashedPassword = await hashPassword(data.password ?? "password123");
-    const newUser = await User.create({ ...data, password: hashedPassword });
+    // compute SHA-384 of the email and sign it with server keypair
+    const emailHash = hashEmail(data.email);
+    const emailSignature = signDigest(emailHash);
+
+    const newUser = await User.create({
+      ...data,
+      password: hashedPassword,
+      emailHash,
+      emailSignature,
+    });
     return newUser;
   }
 
@@ -27,6 +37,13 @@ class UserService {
 
     if (data.password) {
       data.password = await hashPassword(data.password);
+    }
+
+    if (data.email) {
+      const emailHash = hashEmail(data.email);
+      const emailSignature = signDigest(emailHash);
+      data.emailHash = emailHash;
+      data.emailSignature = emailSignature;
     }
 
     await user.update(data);

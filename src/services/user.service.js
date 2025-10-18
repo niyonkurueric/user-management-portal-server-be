@@ -4,24 +4,21 @@ import { hashEmail, signDigest } from "../utils/crypto.js";
 
 class UserService {
   async createUser(data) {
-    const existingUser = await User.findOne({ where: { email: data.email } });
-    if (existingUser) throw new Error("Email already exists");
-
-    const hashedPassword = await hashPassword(data.password ?? "password123");
-    // compute SHA-384 of the email and sign it with server keypair
     const emailHash = hashEmail(data.email);
-    const emailSignature = signDigest(emailHash);
-
-    const newUser = await User.create({
+    if (await User.findOne({ where: { email: emailHash } }))
+      throw new Error("Email already exists");
+    const password = await hashPassword(data.password ?? "password123");
+    const ogEmail = data.email;
+    return User.create({
       ...data,
-      password: hashedPassword,
-      emailHash,
-      emailSignature,
+      email: emailHash,
+      ogEmail,
+      password,
+      emailSignature: signDigest(emailHash),
     });
-    return newUser;
   }
 
-  async getAllUsers() {
+  getAllUsers() {
     return User.findAll({ order: [["createdAt", "desc"]] });
   }
 
@@ -34,18 +31,15 @@ class UserService {
   async updateUser(id, data) {
     const user = await User.findByPk(id);
     if (!user) throw new Error("User not found");
-
-    if (data.password) {
-      data.password = await hashPassword(data.password);
-    }
-
+    if (data.password) data.password = await hashPassword(data.password);
     if (data.email) {
-      const emailHash = hashEmail(data.email);
-      const emailSignature = signDigest(emailHash);
-      data.emailHash = emailHash;
-      data.emailSignature = emailSignature;
+      const plain = data.email;
+      const emailHash = hashEmail(plain);
+      data.email = emailHash;
+      data.emailEncrypted = encryptEmail(plain);
+      data.ogEmail = plain;
+      data.emailSignature = signDigest(emailHash);
     }
-
     await user.update(data);
     return user;
   }

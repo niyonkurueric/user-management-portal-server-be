@@ -14,7 +14,7 @@ const User = sequelize.define(
       allowNull: false,
       unique: true,
     },
-    emailHash: {
+    ogEmail: {
       type: DataTypes.STRING,
       allowNull: true,
     },

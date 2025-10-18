@@ -1,4 +1,3 @@
-/* eslint-env node */
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -6,11 +5,11 @@ import sequelize from "../config/database.js";
 import User from "../models/userModel.js";
 import { hashPassword } from "../utils/hash.js";
 import { hashEmail, signDigest } from "../utils/crypto.js";
+import { Logger } from "../utils/logger.js";
 
 const seedAdmin = async () => {
   try {
     await sequelize.authenticate();
-    // Use alter in dev to update the table schema with new fields (emailHash, emailSignature)
     await sequelize.sync({ alter: true });
 
     const adminEmail = process.env.ADMIN_EMAIL || "admin@example.com";
@@ -18,7 +17,7 @@ const seedAdmin = async () => {
 
     const existing = await User.findOne({ where: { email: adminEmail } });
     if (existing) {
-      console.log(`Admin user already exists: ${adminEmail}`);
+      Logger.info(`Admin user already exists: ${adminEmail}`);
       process.exit(0);
     }
 
@@ -31,14 +30,12 @@ const seedAdmin = async () => {
       password: hashed,
       role: "admin",
       status: "active",
-      emailHash,
       emailSignature,
-      assigned: true,
     });
-    console.log(`Admin created: ${adminEmail}`);
+    Logger.info(`Admin created: ${adminEmail}`);
     process.exit(0);
   } catch (err) {
-    console.error("Seeding failed:", err);
+    Logger.error("Seeding failed:", err);
     process.exit(1);
   }
 };

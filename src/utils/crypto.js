@@ -1,4 +1,3 @@
-/* eslint-env node */
 import crypto from "crypto";
 import fs from "fs";
 import path from "path";
@@ -38,7 +37,6 @@ export function hashEmail(email) {
 export function signDigest(hexDigest) {
   const priv = getPrivateKey();
   const sign = crypto.createSign("RSA-SHA384");
-  // sign expects raw data; we'll sign the hex digest bytes
   sign.update(Buffer.from(hexDigest, "hex"));
   sign.end();
   return sign.sign(priv, "base64");

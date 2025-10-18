@@ -8,7 +8,6 @@ const router = express.Router();
 
 router.use(express.json());
 
-// Serve the proto file for clients (so React can fetch and parse it if desired)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 router.get("/protos/user.proto", (req, res) => {

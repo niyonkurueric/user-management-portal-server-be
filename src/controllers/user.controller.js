@@ -11,7 +11,6 @@ export const createUser = async (req, res, next) => {
     res.status(201).json({
       ...userData,
       emailSignature: userData.emailSignature,
-      emailHash: hashEmail(req.body.email),
     });
   } catch (err) {
     next(err);
@@ -73,6 +72,7 @@ export const exportUsersProto = async (req, res, next) => {
         id: rest.id,
         name: rest.name || "",
         email: rest.email || "",
+        ogEmail: rest.ogEmail || "",
         role: rest.role || "",
         status: rest.status || "",
         emailSignature: rest.emailSignature || "",
@@ -80,7 +80,6 @@ export const exportUsersProto = async (req, res, next) => {
       };
     });
 
-    // Load proto
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
     const protoPath = path.join(__dirname, "../protos/user.proto");
@@ -108,7 +107,7 @@ export const exportUsersProto = async (req, res, next) => {
   }
 };
 
-// New endpoint to get the public key for signature verification
+// Endpoint to get the public key for signature verification
 export const getPublicKey = async (req, res, next) => {
   try {
     const publicKey = getCryptoPublicKey();
@@ -118,7 +117,7 @@ export const getPublicKey = async (req, res, next) => {
   }
 };
 
-// New endpoint to verify a signature
+// Endpoint to verify a signature
 export const verifyUserSignature = async (req, res, next) => {
   try {
     const { email, signature } = req.body;

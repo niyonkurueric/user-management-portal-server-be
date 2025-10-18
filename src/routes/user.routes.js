@@ -4,12 +4,12 @@ import requireAdmin from "../middleware/requireAdmin.js";
 
 const userRoutes = express.Router();
 
-userRoutes.get("/", userController.getUsers);
+userRoutes.get("/", requireAdmin, userController.getUsers);
 
 userRoutes.post("/", requireAdmin, userController.createUser);
 
-userRoutes.get("/export", userController.exportUsersProto);
-userRoutes.get("/public-key", userController.getPublicKey);
+userRoutes.get("/export", requireAdmin, userController.exportUsersProto);
+userRoutes.get("/public-key", requireAdmin, userController.getPublicKey);
 userRoutes.post("/verify-signature", userController.verifyUserSignature);
 userRoutes.get("/:id", userController.getUser);
 

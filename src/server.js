@@ -4,6 +4,7 @@ dotenv.config();
 
 import app from "./app.js";
 import sequelize from "./config/database.js";
+import { Logger } from "./utils/logger.js";
 
 const PORT = process.env.PORT || 3000;
 
@@ -11,10 +12,10 @@ const PORT = process.env.PORT || 3000;
   try {
     await sequelize.authenticate();
     await sequelize.sync();
-    console.log("Database synced successfully");
+    Logger.info("Database synced successfully");
 
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   } catch (err) {
-    console.error("Database connection failed:", err);
+    Logger.error("Database connection failed:", err);
   }
 })();

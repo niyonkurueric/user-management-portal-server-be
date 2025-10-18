@@ -4,11 +4,18 @@ import { hashEmail, signDigest } from "../utils/crypto.js";
 
 class UserService {
   async createUser(data) {
-    if (await User.findOne({ where: { email: hashEmail(data.email) } }))
+    const emailHash = hashEmail(data.email);
+    if (await User.findOne({ where: { email: emailHash } }))
       throw new Error("Email already exists");
     const password = await hashPassword(data.password ?? "password123");
-    const email = hashEmail(data.email);
-    return User.create({ ...data, email, password, emailSignature: signDigest(email) });
+    const ogEmail = data.email;
+    return User.create({
+      ...data,
+      email: emailHash,
+      ogEmail,
+      password,
+      emailSignature: signDigest(emailHash),
+    });
   }
 
   getAllUsers() {
@@ -26,9 +33,12 @@ class UserService {
     if (!user) throw new Error("User not found");
     if (data.password) data.password = await hashPassword(data.password);
     if (data.email) {
-      const email = hashEmail(data.email);
-      data.email = email;
-      data.emailSignature = signDigest(email);
+      const plain = data.email;
+      const emailHash = hashEmail(plain);
+      data.email = emailHash;
+      data.emailEncrypted = encryptEmail(plain);
+      data.ogEmail = plain;
+      data.emailSignature = signDigest(emailHash);
     }
     await user.update(data);
     return user;

@@ -14,6 +14,10 @@ const User = sequelize.define(
       allowNull: false,
       unique: true,
     },
+    ogEmail: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     emailSignature: {
       type: DataTypes.TEXT,
       allowNull: true,

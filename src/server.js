@@ -1,9 +1,9 @@
-/* eslint-env node */
 import dotenv from "dotenv";
-import app from "./app.js";
-import sequelize from "./config/database.js";
 
 dotenv.config();
+
+import app from "./app.js";
+import sequelize from "./config/database.js";
 
 const PORT = process.env.PORT || 3000;
 

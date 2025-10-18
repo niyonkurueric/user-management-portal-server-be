@@ -1,4 +1,3 @@
-/* eslint-env node */
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -10,7 +9,6 @@ import { hashEmail, signDigest } from "../utils/crypto.js";
 const seedAdmin = async () => {
   try {
     await sequelize.authenticate();
-    // Use alter in dev to update the table schema with new fields (emailHash, emailSignature)
     await sequelize.sync({ alter: true });
 
     const adminEmail = process.env.ADMIN_EMAIL || "admin@example.com";
@@ -31,9 +29,7 @@ const seedAdmin = async () => {
       password: hashed,
       role: "admin",
       status: "active",
-      emailHash,
       emailSignature,
-      assigned: true,
     });
     console.log(`Admin created: ${adminEmail}`);
     process.exit(0);

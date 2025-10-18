@@ -8,9 +8,11 @@ message User {
   string email = 3;
   string role = 4;
   string status = 5;
-  string createdAt = 6; // ISO string
+  string emailSignature = 6;
+  string createdAt = 7; // ISO string
 }
 
 message Users {
   repeated User users = 1;
+  string publicKey = 2;
 }

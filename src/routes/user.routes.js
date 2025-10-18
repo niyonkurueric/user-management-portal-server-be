@@ -9,6 +9,8 @@ userRoutes.get("/", userController.getUsers);
 userRoutes.post("/", requireAdmin, userController.createUser);
 
 userRoutes.get("/export", userController.exportUsersProto);
+userRoutes.get("/public-key", userController.getPublicKey);
+userRoutes.post("/verify-signature", userController.verifyUserSignature);
 userRoutes.get("/:id", userController.getUser);
 
 userRoutes.put("/:id", userController.updateUser);

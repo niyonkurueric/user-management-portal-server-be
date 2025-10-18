@@ -27,6 +27,8 @@ If you prefer not to store plaintext emails (`ogEmail`) keep `ogEmail` null and 
 
 ## Quick start
 
+
+
 1. Install dependencies
 
 ```bash
@@ -40,10 +42,17 @@ cp .env.example .env
 # Edit .env to set values like PORT and JWT_SECRET
 ```
 
-3. Seed an admin user (optional)
+3. Seed an admin user
 
 ```bash
 npm run seed
+```
+
+3. admin user credation for login 
+
+```bash
+admin@example.com
+admin123
 ```
 
 4. Start the server
@@ -167,25 +176,11 @@ GET `/api/users/export` — returns protobuf with `ogEmail` included. Use `src/p
 
 See the frontend verification guide in this README (or use the server `POST /api/users/verify-signature` endpoint as fallback).
 
-## Troubleshooting
+## Screenshoot for swagger 
 
-- If export fails: make sure `src/protos/user.proto` matches the actual payload shape.
-- If you cannot decrypt `emailEncrypted`, check `keys/email.key` exists and has correct permissions.
-- If login fails despite correct credentials: ensure the login email is normalized (lowercase + trimmed) — the server hashes the normalized email before lookup.
+<img width="1435" height="700" alt="Screenshot 2025-10-18 at 18 03 19" src="https://github.com/user-attachments/assets/a9379005-61f3-4436-af6a-1fc7617e484c" />
+<img width="1425" height="722" alt="Screenshot 2025-10-18 at 18 03 08" src="https://github.com/user-attachments/assets/8435691e-a060-4699-aa19-8e784c084321" />
+<img width="1436" height="781" alt="Screenshot 2025-10-18 at 18 02 58" src="https://github.com/user-attachments/assets/9d24fd87-5e8e-4fdb-8978-8fc10d737e78" />
+<img width="1432" height="781" alt="Screenshot 2025-10-18 at 18 02 49" src="https://github.com/user-attachments/assets/f85dfffb-98cc-4591-8e14-bf0a77e3a9f0" />
+<img width="1438" height="785" alt="Screenshot 2025-10-18 at 18 00 57" src="https://github.com/user-attachments/assets/3f0daa0e-2fb5-47f4-a470-ea4035ba2fff" />
 
-## Development
-
-- Lint: `npm run lint`
-- Dev server: `npm run dev`
-
-## Contributing
-
-- Open a PR with tests or a clear explanation of fixes. Keep API changes backward-compatible where possible.
-
----
-
-If you'd like, I can:
-
-- Add example curl/Postman collections for each endpoint
-- Add a migration and a small backfill script to populate `ogEmail`/`emailEncrypted` for existing users (if you have the plaintext emails somewhere)
-- Add a React example that downloads the protobuf export and verifies signatures client-side
